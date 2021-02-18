@@ -1,0 +1,205 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <!-- 
+          <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
+
+    <title>Delhi Metro</title>
+    <link rel="stylesheet" href="{% static 'css/leaflet.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/leaflet-legend.css' %}" />
+    <link
+      rel="stylesheet"
+      href="{% static 'css/L.Control.OpenCageSearch.css' %}"
+    />
+    <script src="{% static 'js/leaflet-src.js' %}"></script>
+    <script src="{% static 'js/jquery-3.5.1.min.js' %}"></script>
+    <script src="{% static 'js/leaflet.ajax.min.js' %}"></script>
+
+    <script src="{% static 'js/leaflet-providers.js' %}"></script>
+
+    <script src="{% static 'js/leaflet-legend.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@turf/turf@5/turf.min.js"></script>
+    <script src="{% static 'js/L.Control.OpenCageSearch.js' %}"></script>
+    <style>
+      #mapdiv {
+        width: 100%;
+        height: 90vh;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1 style="text-align: center">
+      The Delhi Metro is a mass rapid transit system serving Delhi 
+    </h1>
+    <h3 style="text-align: center"> </h3>
+    <!-- <h1>
+      <a href="https://www.wsup.com/where-we-work/bangladesh/">
+        <img
+          src="{% static 'img/Delhi-Metro-Blue-Line.jpg' %}"
+          alt="water and sanitation for the urban poor"
+          width="1800"
+          height="100"
+        />
+      </a>
+    </h1> -->
+
+    <div id="mapdiv"></div>
+    <script>
+            var mymap;
+            var lyrDark;
+            var lyrTopo;
+            var lyrImagery;
+            var lyrOutdoors;
+
+            var layerToilet;
+            var road;
+            var structure;
+            var ctlSearch;
+            var mrkCurrentLocation;
+            var ctlLayers;
+            var objBasemaps;
+            var objOverlays;
+            var waterbody;
+            var icnRedSprite;
+            var icnVioletsprite;
+            var icnLAMtree;
+            var icnLAMtoilet;
+
+            var toilet_final;
+            var LicBoundary;
+            var structure;
+            var lic_point;
+            var toilet_proposed;
+            var water_source;
+            var handwash_fcilities;
+            var containment;
+            var delhi_train;
+            var station_buffer1;
+            var station_buffer2;
+
+
+
+      function icon(iconUrl) {
+          return L.icon({
+              iconUrl: iconUrl,
+              iconSize: [24, 24],
+              iconAnchor: [12, 12]
+          })
+      }
+
+
+            $(document).ready(function () {
+              mymap = L.map("mapdiv", { center: [28.695730, 77.180567], zoom: 13 });
+              lyrOSM = L.tileLayer.provider("OpenStreetMap.Mapnik");
+              lyrDark = L.tileLayer.provider("Stadia.AlidadeSmoothDark");
+              lyrTopo = L.tileLayer.provider("OpenTopoMap");
+              lyrImagery = L.tileLayer.provider("Esri.WorldImagery");
+              lyrOutdoors = L.tileLayer.provider("Stadia.Outdoors");
+
+              mymap.addLayer(lyrOSM);
+
+              delhi_train = L.geoJSON.ajax("{% static 'data/delhi_metro_rail.geojson' %}",{pointToLayer : returnDelhi_train_Marker}).addTo(mymap);
+              delhi_train.on('data:loaded', function(){
+                  mymap.fitBounds(lic_point.getBounds());
+
+               
+              });
+
+
+
+
+
+
+
+
+
+              objBasemaps = {
+                "Open Stret Maps": lyrOSM,
+                "Topo Map": lyrTopo,
+                "Esri Imagery Map": lyrImagery,
+
+              };
+
+              objOverlays = {
+
+
+                    "<img src='{% static 'img/railway-station.png' %}' height=18> Delhi Train Station" : delhi_train,
+
+              };
+
+
+
+
+
+              ctlLayers = L.control
+                .layers(objBasemaps, objOverlays, { collapsed: false })
+                .addTo(mymap);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                function returnDelhi_train_Marker(json, latlng){
+                    var att = json.properties;
+
+                    return L.marker(latlng,{icon: icon('{% static 'img/railway-station.png' %}')}).bindTooltip("<h4>Station Name : " +att.Station+"</h4><h4>Line  Type: " +att.Line+"</h4><h4>Latitude: " +att.Latitude+"</h4><h4>Longitude: " +att.Longitude);
+
+
+                }
+
+
+          
+
+
+
+
+
+              // this is for address search perpose
+
+              ctlSearch = L.Control.openCageSearch({
+                key: "3c38d15e76c02545181b07d3f8cfccf0",
+                limit: 10,
+              }).addTo(mymap);
+
+
+            });
+    </script>
+
+    <!-- START FOOTER BOTTOM AREA -->
+    <footer class="footer-bottom-area footer-bottom-bg">
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="footer-text text-center">
+              <p class="text-muted">
+                <span>All right reserved by </span> &copy; Md. Irfan Hossain
+              </p>
+      
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <!-- END FOOTER BOTTOM AREA -->
+  </body>
+</html>

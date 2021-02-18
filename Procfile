@@ -1,0 +1,1 @@
+web: gunicorn wsump.wsgi --log-file -
