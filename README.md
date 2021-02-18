@@ -1,5 +1,5 @@
-# wsup_django
+# delhi-train-102
 
 
 demo link 
-https://quiet-hamlet-11313.herokuapp.com/
+https://delhi-metro-rail.herokuapp.com/
